@@ -5,7 +5,7 @@ services:
     command:
     - apiserver
     container_name: clearml-apiserver
-    image: allegroai/clearml:latest
+    image: aljeshishe/clearml:1.0.2
     restart: unless-stopped
     volumes:
     - /opt/clearml/logs:/var/log/clearml

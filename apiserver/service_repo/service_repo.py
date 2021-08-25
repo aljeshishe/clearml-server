@@ -1,4 +1,5 @@
 import re
+from contextlib import suppress
 from importlib import import_module
 from itertools import chain
 from pathlib import Path
@@ -306,7 +307,15 @@ class ServiceRepo(object):
             content, content_type = call.get_response()
             call.mark_end()
 
-            console_msg = f"Returned {call.result.code} for {call.endpoint_name} in {call.duration}ms"
+            task_id = ''
+            with suppress(Exception):
+                task_id = call.batched_data[0]['task']
+            if not task_id:
+                with suppress(Exception):
+                    task_id = call.data['task']
+
+            console_msg = f"{call.real_ip}: Returned {call.result.code} for {call.endpoint_name} {task_id} " \
+                          f"{call.headers.get('Content-Length', 0)} in {call.duration}ms"
             if call.result.code < 300:
                 log.info(console_msg)
             else:
